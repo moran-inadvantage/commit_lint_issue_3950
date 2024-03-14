@@ -1,0 +1,27 @@
+name: commit-validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate_commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+            # Allows history
+            fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Dependencies
+        run: npm install @commitlint/{config-conventional,cli} husky
+
+      - name: Run CommitLint
+        run: npx commitlint --from=HEAD~1 --to=HEAD
